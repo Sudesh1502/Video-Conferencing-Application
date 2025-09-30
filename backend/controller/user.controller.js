@@ -20,7 +20,7 @@ export class userController {
                 let token = crypto.randomBytes(20).toString("hex");
                 user.token = token;
                 await user.save();
-                return res.status(status.CREATED).json({ messgae: "Login successful.", token: token });
+                return res.status(status.OK).json({ message: "Login successful.", token: token });
             } else {
                 return res.status(status.BAD_REQUEST).json({ message: "User not found with this email and password." });
             }
