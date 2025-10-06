@@ -22,44 +22,44 @@ const defaultTheme = createTheme();
 
 export default function Authentication() {
   const { handleRegister, handleLogin } = React.useContext(AuthContext);
+
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [formState, setFormState] = useState(0); // 0 = Sign In, 1 = Sign Up
+  const [open, setOpen] = useState(false);
+
+
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(""); // clear previous errors
     try {
       if (formState === 1) {
-        let result = await handleRegister(userName, email, password);
-        console.log(result);
-        setMessage(result);
-        setUserName("");
-        setPassword("");
-        setPassword("");
-        setFormState(0);
-        setOpen(true);
+        // Sign Up
+        const result = await handleRegister(userName, email, password);
+        setMessage(result.message || "Registration successful");
       } else {
-        let result = await handleLogin(email, password);
-        console.log(result);
-        setMessage(result.message);
-        setUserName("");
-        setPassword("");
-        setPassword("");
-        setFormState(0);
-        setOpen(true);
+        // Sign In
+        const result = await handleLogin(email, password);
+        setMessage(result.message || "Login successful");
       }
+      // reset form fields
+      setUserName("");
+      setEmail("");
+      setPassword("");
+      setFormState(0);
+      setOpen(true);
     } catch (err) {
-      setError(err);
-      throw err;
+      const msg = err.response?.data?.message || "Something went wrong";
+  setError(msg);
     }
   };
 
-  //for form data
-  const [userName, setUserName] = useState();
-  const [password, setPassword] = useState();
-  const [email, setEmail] = useState();
-  const [error, setError] = useState();
-  const [message, setMessage] = useState();
-
-  //for form
-  const [formState, setFormState] = useState(0);
-  const [open, setOpen] = useState(false);
+  
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -125,6 +125,7 @@ export default function Authentication() {
                   required
                   fullWidth
                   id="userName"
+                  value={userName}
                   label="User Name"
                   name="userName"
                   autoFocus
@@ -140,6 +141,7 @@ export default function Authentication() {
                 id="email"
                 label="Email Address"
                 name="email"
+                value={email}
                 autoFocus
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -149,12 +151,13 @@ export default function Authentication() {
                 required
                 fullWidth
                 name="password"
+                value={password}
                 label="Password"
                 type="password"
                 id="password"
                 onChange={(e) => setPassword(e.target.value)}
               />
-              {error ? <p style={{ color: "red" }}>{error}</p> : <></>}
+              {error && <p style={{ color: "red" }}>{error}</p>}
               
 
               {formState === 1 ? (
@@ -171,7 +174,7 @@ export default function Authentication() {
                 </Button>
               ) : (
                 <Button
-                  type="button"
+                  type="submit"
                   fullWidth
                   variant="contained"
                   sx={{ mt: 3, mb: 2 }}

@@ -12,7 +12,11 @@ export const AuthProvider = ({ children }) => {
   const router = useNavigate();
   const handleRegister = async (username, email, password) => {
     try {
-      let request = await client.post("/register", { email, username, password });
+      let request = await client.post("/register", {
+        email,
+        username,
+        password,
+      });
 
       if (request.status === httpStatus.CREATED) {
         return request.data.message;
@@ -28,9 +32,11 @@ export const AuthProvider = ({ children }) => {
 
       if (request.status === httpStatus.OK) {
         localStorage.setItem("token", request.data.token);
+        router("/home");
         return request.data;
       }
     } catch (error) {
+      console.log(error.response?.data?.message || "Login failed");
       throw error;
     }
   };

@@ -15,6 +15,7 @@ export const socketServer = (server) =>{
 
     io.on("connection",(socket)=>{
         //path here refers to a room ...meaning which room socket wants to join.
+        console.log("something is connected");
         socket.on("join-call",(path)=>{
             if(connections[path] === undefined){
                 connections[path] = [];

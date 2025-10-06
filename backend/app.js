@@ -27,17 +27,17 @@ app.get("/",(req, res)=>{
     res.json({"message" : "API is working."}); // Sample
 })
 
-const stratServer = async () =>{
-    try{
-        await mongoose.connect(process.env.MONGO_URL)
-        console.log("Database connection successfull...")
-        app.listen(app.get("port"), async()=>{
-    
-    console.log("Server is listening on port 8000.");
-})
-    }catch(e){
-        console.log("Can't connect database. " + e);
-    }
-}
-//configurations
-stratServer();
+const startServer = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URL);
+    console.log("Database connection successful...");
+
+    server.listen(app.get("port"), () => {
+      console.log("Server is listening on port", app.get("port"));
+    });
+  } catch (e) {
+    console.log("Can't connect database. " + e);
+  }
+};
+
+startServer();
